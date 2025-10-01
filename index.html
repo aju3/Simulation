@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Simulation Games</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            touch-action: manipulation; /* Prevents double-tap zoom on mobile */
+        }
+        .game-canvas {
+            cursor: pointer;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+        }
+        .active-game-tab {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .inactive-game-tab {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+        /* Custom scrollbar for game tabs on mobile */
+        .tab-container::-webkit-scrollbar {
+            display: none;
+        }
+        .tab-container {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 max-w-4xl">
+        <header class="text-center mb-6">
+            <h1 class="text-4xl font-bold text-indigo-600">Sim World</h1>
+            <p class="text-gray-600 mt-2">A collection of 5 mini simulation games for your browser.</p>
+        </header>
+
+        <!-- Game Tabs -->
+        <nav class="mb-6">
+            <div class="tab-container flex overflow-x-auto space-x-2 p-1 bg-gray-200 rounded-lg">
+                <button data-game="lifesim" class="game-tab active-game-tab flex-shrink-0 w-1/3 md:w-auto md:flex-1 text-center font-semibold py-2 px-4 rounded-md shadow-sm transition-all duration-300">LifeSim</button>
+                <button data-game="cityscape" class="game-tab inactive-game-tab flex-shrink-0 w-1/3 md:w-auto md:flex-1 text-center font-semibold py-2 px-4 rounded-md shadow-sm transition-all duration-300">CityScape</button>
+                <button data-game="pixelpowder" class="game-tab inactive-game-tab flex-shrink-0 w-1/3 md:w-auto md:flex-1 text-center font-semibold py-2 px-4 rounded-md shadow-sm transition-all duration-300">PixelPowder</button>
+                <button data-game="ecosphere" class="game-tab inactive-game-tab flex-shrink-0 w-1/3 md:w-auto md:flex-1 text-center font-semibold py-2 px-4 rounded-md shadow-sm transition-all duration-300">EcoSphere</button>
+                <button data-game="marketmogul" class="game-tab inactive-game-tab flex-shrink-0 w-1/3 md:w-auto md:flex-1 text-center font-semibold py-2 px-4 rounded-md shadow-sm transition-all duration-300">MarketMogul</button>
+            </div>
+        </nav>
+
+        <main id="game-container">
+            <!-- Game Content will be injected here -->
+        </main>
+    </div>
+
+    <!-- Game Templates -->
+    <template id="lifesim-template">
+        <div class="game-content bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-1">LifeSim</h2>
+            <p class="text-gray-500 mb-4 text-sm sm:text-base">Conway's Game of Life. Tap/drag to draw cells, then press Start.</p>
+            <canvas id="lifesim-canvas" class="game-canvas bg-gray-50 w-full"></canvas>
+            <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button id="lifesim-start" class="bg-green-500 text-white font-bold py-2 px-4 rounded-lg shadow hover:bg-green-600 transition">Start</button>
+                <button id="lifesim-stop" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg shadow hover:bg-red-600 transition">Stop</button>
+                <button id="lifesim-clear" class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg shadow hover:bg-gray-600 transition">Clear</button>
+                <button id="lifesim-random" class="bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg shadow hover:bg-indigo-600 transition">Randomize</button>
+            </div>
+        </div>
+    </template>
+    
+    <template id="cityscape-template">
+        <div class="game-content bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-1">CityScape</h2>
+            <p class="text-gray-500 mb-4 text-sm sm:text-base">Minimal city builder. Select a zone and tap the grid to build.</p>
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-4 p-3 bg-gray-100 rounded-lg">
+                <div class="font-bold text-lg">💰 $<span id="city-funds">10000</span></div>
+                <div class="text-md text-gray-700">🧑‍🤝‍🧑 <span id="city-pop">0</span></div>
+                <div class="text-md text-gray-700">🗓️ Day <span id="city-day">0</span></div>
+            </div>
+            <div id="cityscape-grid" class="grid gap-px bg-gray-300 w-full aspect-square border border-gray-300 rounded-md"></div>
+             <div class="mt-4">
+                <p class="mb-2 font-semibold">Build Menu:</p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <button class="city-tool bg-green-200 border-2 border-green-500 text-green-800 font-bold py-2 px-4 rounded-lg shadow" data-zone="residential">Residential</button>
+                    <button class="city-tool bg-blue-200 text-blue-800 font-bold py-2 px-4 rounded-lg shadow" data-zone="commercial">Commercial</button>
+                    <button class="city-tool bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-lg shadow" data-zone="industrial">Industrial</button>
+                    <button class="city-tool bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg shadow" data-zone="road">Road</button>
+                 </div>
+             </div>
+        </div>
+    </template>
+
+    <template id="pixelpowder-template">
+        <div class="game-content bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-1">PixelPowder</h2>
+            <p class="text-gray-500 mb-4 text-sm sm:text-base">Falling sand game. Select an element and draw on the canvas.</p>
+            <canvas id="pixelpowder-canvas" class="game-canvas bg-gray-800 w-full"></canvas>
+            <div class="mt-4">
+                <p class="mb-2 font-semibold">Elements:</p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <button class="powder-tool border-2 border-yellow-500 bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-lg shadow" data-element="sand">Sand</button>
+                    <button class="powder-tool bg-blue-200 text-blue-800 font-bold py-2 px-4 rounded-lg shadow" data-element="water">Water</button>
+                    <button class="powder-tool bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg shadow" data-element="stone">Stone</button>
+                    <button class="powder-tool bg-red-200 text-red-800 font-bold py-2 px-4 rounded-lg shadow" data-element="erase">Erase</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="ecosphere-template">
+        <div class="game-content bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-1">EcoSphere</h2>
+            <p class="text-gray-500 mb-4 text-sm sm:text-base">A simple predator-prey simulation. Add creatures and watch what happens.</p>
+            <canvas id="ecosphere-canvas" class="game-canvas bg-green-100 w-full"></canvas>
+            <div class="mt-4 flex flex-col sm:flex-row justify-between items-center p-3 bg-gray-100 rounded-lg">
+                <div>🌿 <span id="eco-grass">0</span></div>
+                <div>🐑 <span id="eco-sheep">0</span></div>
+                <div>🐺 <span id="eco-wolves">0</span></div>
+            </div>
+            <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <button id="eco-add-grass" class="bg-green-500 text-white font-bold py-2 px-4 rounded-lg shadow hover:bg-green-600 transition">Add Grass</button>
+                <button id="eco-add-sheep" class="bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg shadow hover:bg-gray-400 transition">Add Sheep</button>
+                <button id="eco-add-wolf" class="bg-gray-700 text-white font-bold py-2 px-4 rounded-lg shadow hover:bg-gray-800 transition">Add Wolf</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="marketmogul-template">
+         <div class="game-content bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-1">MarketMogul</h2>
+            <p class="text-gray-500 mb-4 text-sm sm:text-base">Stock market simulator. Try to turn a profit!</p>
+            <canvas id="marketmogul-canvas" class="game-canvas bg-gray-50 w-full h-48 sm:h-64"></canvas>
+            <div class="mt-4 p-3 bg-gray-100 rounded-lg grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+                <div>
+                    <div class="text-sm text-gray-500">Cash</div>
+                    <div class="font-bold text-lg text-green-600">$<span id="market-cash">1000</span></div>
+                </div>
+                 <div>
+                    <div class="text-sm text-gray-500">Shares</div>
+                    <div class="font-bold text-lg text-indigo-600"><span id="market-shares">0</span></div>
+                </div>
+                <div>
+                    <div class="text-sm text-gray-500">Stock Price</div>
+                    <div class="font-bold text-lg text-gray-800">$<span id="market-price">100.00</span></div>
+                </div>
+                <div>
+                    <div class="text-sm text-gray-500">Net Worth</div>
+                    <div class="font-bold text-lg text-blue-600">$<span id="market-worth">1000.00</span></div>
+                </div>
+            </div>
+             <div class="mt-4 grid grid-cols-2 gap-2">
+                 <button id="market-buy" class="bg-green-500 text-white font-bold py-2 px-4 rounded-lg shadow hover:bg-green-600 transition">Buy 1 Share</button>
+                 <button id="market-sell" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg shadow hover:bg-red-600 transition">Sell 1 Share</button>
+            </div>
+        </div>
+    </template>
+
+
+    <script>
+    // --- Main Game Controller ---
+    const gameContainer = document.getElementById('game-container');
+    const gameTabs = document.querySelectorAll('.game-tab');
+    let activeGame = 'lifesim';
+    let activeGameInstance = null;
+
+    const gameInitializers = {
+        lifesim: initLifeSim,
+        cityscape: initCityScape,
+        pixelpowder: initPixelPowder,
+        ecosphere: initEcoSphere,
+        marketmogul: initMarketMogul
+    };
+
+    function switchGame(gameId) {
+        if (activeGameInstance && activeGameInstance.stop) {
+            activeGameInstance.stop();
+        }
+
+        activeGame = gameId;
+        gameContainer.innerHTML = '';
+        const template = document.getElementById(`${gameId}-template`);
+        if (template) {
+            const clone = template.content.cloneNode(true);
+            gameContainer.appendChild(clone);
+            activeGameInstance = gameInitializers[gameId]();
+        }
+
+        gameTabs.forEach(tab => {
+            if (tab.dataset.game === gameId) {
+                tab.classList.replace('inactive-game-tab', 'active-game-tab');
+            } else {
+                tab.classList.replace('active-game-tab', 'inactive-game-tab');
+            }
+        });
+    }
+
+    gameTabs.forEach(tab => {
+        tab.addEventListener('click', () => switchGame(tab.dataset.game));
+    });
+
+    // Initial game load
+    window.addEventListener('load', () => switchGame('lifesim'));
+
+    // --- Game Implementations ---
+
+    // 1. LifeSim (Conway's Game of Life)
+    function initLifeSim() {
+        const canvas = document.getElementById('lifesim-canvas');
+        const ctx = canvas.getContext('2d');
+        const resolution = 10;
+        let cols, rows;
+        let grid;
+        let animationFrameId;
+        let isRunning = false;
+        let isDrawing = false;
+
+        function setup() {
+            const containerWidth = canvas.parentElement.clientWidth;
+            canvas.width = containerWidth;
+            canvas.height = containerWidth * 0.75; // Aspect ratio
+            cols = Math.floor(canvas.width / resolution);
+            rows = Math.floor(canvas.height / resolution);
+            grid = buildGrid();
+            drawGrid();
+        }
+
+        function buildGrid() {
+            return new Array(cols).fill(null)
+                .map(() => new Array(rows).fill(0));
+        }
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let col = 0; col < cols; col++) {
+                for (let row = 0; row < rows; row++) {
+                    if (grid[col][row]) {
+                        ctx.fillStyle = '#4f46e5';
+                        ctx.fillRect(col * resolution, row * resolution, resolution - 1, resolution - 1);
+                    }
+                }
+            }
+        }
+        
+        function update() {
+            if (!isRunning) return;
+            grid = nextGen(grid);
+            drawGrid();
+            animationFrameId = requestAnimationFrame(update);
+        }
+
+        function nextGen(currentGrid) {
+            const nextGrid = currentGrid.map(arr => [...arr]);
+            for (let col = 0; col < currentGrid.length; col++) {
+                for (let row = 0; row < currentGrid[col].length; row++) {
+                    const cell = currentGrid[col][row];
+                    let numNeighbors = 0;
+                    for (let i = -1; i < 2; i++) {
+                        for (let j = -1; j < 2; j++) {
+                            if (i === 0 && j === 0) continue;
+                            const x_cell = col + i;
+                            const y_cell = row + j;
+                            if (x_cell >= 0 && y_cell >= 0 && x_cell < cols && y_cell < rows) {
+                                numNeighbors += currentGrid[x_cell][y_cell];
+                            }
+                        }
+                    }
+                    if (cell === 1 && numNeighbors < 2) nextGrid[col][row] = 0;
+                    else if (cell === 1 && numNeighbors > 3) nextGrid[col][row] = 0;
+                    else if (cell === 0 && numNeighbors === 3) nextGrid[col][row] = 1;
+                }
+            }
+            return nextGrid;
+        }
+
+        function handleDraw(e) {
+             if (!isDrawing) return;
+             e.preventDefault();
+             const rect = canvas.getBoundingClientRect();
+             const touch = e.touches ? e.touches[0] : e;
+             const x = touch.clientX - rect.left;
+             const y = touch.clientY - rect.top;
+             const col = Math.floor(x / resolution);
+             const row = Math.floor(y / resolution);
+             if (col >= 0 && row >= 0 && col < cols && row < rows) {
+                 grid[col][row] = 1;
+                 drawGrid();
+             }
+        }
+        
+        canvas.addEventListener('mousedown', (e) => { isDrawing = true; handleDraw(e); });
+        canvas.addEventListener('mouseup', () => { isDrawing = false; });
+        canvas.addEventListener('mouseleave', () => { isDrawing = false; });
+        canvas.addEventListener('mousemove', handleDraw);
+        canvas.addEventListener('touchstart', (e) => { isDrawing = true; handleDraw(e); }, { passive: false });
+        canvas.addEventListener('touchend', () => { isDrawing = false; });
+        canvas.addEventListener('touchmove', handleDraw, { passive: false });
+
+        document.getElementById('lifesim-start').onclick = () => {
+            if (!isRunning) { isRunning = true; update(); }
+        };
+        document.getElementById('lifesim-stop').onclick = () => {
+            isRunning = false;
+            cancelAnimationFrame(animationFrameId);
+        };
+        document.getElementById('lifesim-clear').onclick = () => {
+            isRunning = false;
+            cancelAnimationFrame(animationFrameId);
+            grid = buildGrid();
+            drawGrid();
+        };
+        document.getElementById('lifesim-random').onclick = () => {
+             grid = new Array(cols).fill(null)
+                .map(() => new Array(rows).fill(0)
+                .map(() => Math.floor(Math.random() * 2)));
+             drawGrid();
+        };
+
+        setup();
+        window.addEventListener('resize', setup);
+        
+        return {
+            stop: () => {
+                isRunning = false;
+                cancelAnimationFrame(animationFrameId);
+                window.removeEventListener('resize', setup);
+            }
+        };
+    }
+
+    // 2. CityScape
+    function initCityScape() {
+        const gridContainer = document.getElementById('cityscape-grid');
+        const fundsEl = document.getElementById('city-funds');
+        const popEl = document.getElementById('city-pop');
+        const dayEl = document.getElementById('city-day');
+        const toolButtons = document.querySelectorAll('.city-tool');
+        
+        const gridSize = 15;
+        let grid = [];
+        let funds = 10000;
+        let population = 0;
+        let day = 0;
+        let currentTool = 'road';
+        let gameInterval;
+        
+        const costs = { residential: 100, commercial: 150, industrial: 200, road: 20 };
+        const zoneColors = {
+            empty: 'bg-gray-100',
+            residential: 'bg-green-500',
+            commercial: 'bg-blue-500',
+            industrial: 'bg-yellow-500',
+            road: 'bg-gray-400'
+        };
+
+        function setup() {
+            gridContainer.innerHTML = '';
+            gridContainer.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+            grid = [];
+            for (let i = 0; i < gridSize * gridSize; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('aspect-square', zoneColors.empty);
+                cell.dataset.index = i;
+                grid.push({ type: 'empty', element: cell, population: 0 });
+                cell.addEventListener('click', () => placeZone(i));
+                gridContainer.appendChild(cell);
+            }
+            updateUI();
+            gameInterval = setInterval(simulateDay, 2000);
+        }
+
+        function setActiveTool(tool) {
+            currentTool = tool;
+            toolButtons.forEach(btn => {
+                if (btn.dataset.zone === tool) {
+                    btn.classList.add('border-2', 'border-indigo-500');
+                    btn.classList.remove('bg-gray-200', 'bg-green-200', 'bg-blue-200', 'bg-yellow-200');
+                    if(tool === 'residential') btn.classList.add('bg-green-200');
+                    if(tool === 'commercial') btn.classList.add('bg-blue-200');
+                    if(tool === 'industrial') btn.classList.add('bg-yellow-200');
+                    if(tool === 'road') btn.classList.add('bg-gray-200');
+                } else {
+                    btn.classList.remove('border-2', 'border-indigo-500');
+                }
+            });
+        }
+        
+        toolButtons.forEach(btn => btn.addEventListener('click', () => setActiveTool(btn.dataset.zone)));
+
+        function placeZone(index) {
+            const cost = costs[currentTool];
+            if (funds >= cost && grid[index].type === 'empty') {
+                funds -= cost;
+                grid[index].type = currentTool;
+                grid[index].element.className = `aspect-square ${zoneColors[currentTool]}`;
+                updateUI();
+            }
+        }
+        
+        function getNeighbors(index) {
+            const neighbors = [];
+            const x = index % gridSize;
+            const y = Math.floor(index / gridSize);
+            const positions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+            for (const [dx, dy] of positions) {
+                const nx = x + dx;
+                const ny = y + dy;
+                if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize) {
+                    neighbors.push(grid[ny * gridSize + nx]);
+                }
+            }
+            return neighbors;
+        }
+
+        function simulateDay() {
+            day++;
+            let totalPop = 0;
+            let income = 0;
+            
+            grid.forEach((cell, index) => {
+                let neighbors = getNeighbors(index);
+                let hasRoad = neighbors.some(n => n.type === 'road');
+
+                if (cell.type === 'residential' && hasRoad) {
+                    let industrialBonus = neighbors.some(n => n.type === 'industrial');
+                    let commercialBonus = neighbors.some(n => n.type === 'commercial');
+                    cell.population += industrialBonus ? 0 : (commercialBonus ? 2 : 1);
+                    if(cell.population > 20) cell.population = 20; // Cap population
+                }
+                
+                if (cell.type === 'commercial' && hasRoad) {
+                     income += Math.floor(cell.population / 2);
+                }
+                
+                if (cell.type === 'industrial' && hasRoad) {
+                    income += 10;
+                }
+                
+                totalPop += cell.population;
+            });
+            
+            funds += income - Math.floor(totalPop * 0.1); // Income - maintenance
+            population = totalPop;
+            updateUI();
+        }
+
+        function updateUI() {
+            fundsEl.textContent = funds;
+            popEl.textContent = population;
+            dayEl.textContent = day;
+        }
+        
+        setup();
+        setActiveTool('road');
+
+        return {
+            stop: () => clearInterval(gameInterval)
+        };
+    }
+    
+    // 3. PixelPowder
+    function initPixelPowder() {
+        const canvas = document.getElementById('pixelpowder-canvas');
+        const ctx = canvas.getContext('2d');
+        const toolButtons = document.querySelectorAll('.powder-tool');
+        const resolution = 5;
+        let cols, rows;
+        let grid;
+        let currentElement = 'sand';
+        let isDrawing = false;
+        let animationFrameId;
+
+        const elements = {
+            empty: 0,
+            sand: 1,
+            water: 2,
+            stone: 3
+        };
+        const colors = {
+            [elements.sand]: '#facc15', // yellow-400
+            [elements.water]: '#60a5fa', // blue-400
+            [elements.stone]: '#a3a3a3' // neutral-400
+        };
+
+        function setup() {
+            const containerWidth = canvas.parentElement.clientWidth;
+            canvas.width = containerWidth;
+            canvas.height = containerWidth * 1.25;
+            cols = Math.floor(canvas.width / resolution);
+            rows = Math.floor(canvas.height / resolution);
+            grid = new Array(cols).fill(0).map(() => new Array(rows).fill(elements.empty));
+            drawGrid();
+            update();
+        }
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < cols; i++) {
+                for (let j = 0; j < rows; j++) {
+                    if (grid[i][j] !== elements.empty) {
+                        ctx.fillStyle = colors[grid[i][j]];
+                        ctx.fillRect(i * resolution, j * resolution, resolution, resolution);
+                    }
+                }
+            }
+        }
+
+        function update() {
+            let newGrid = grid.map(arr => [...arr]);
+            for (let i = 0; i < cols; i++) {
+                for (let j = rows - 1; j >= 0; j--) {
+                    const type = grid[i][j];
+                    if (type === elements.sand) {
+                        if (j + 1 < rows && newGrid[i][j + 1] === elements.empty) {
+                            newGrid[i][j] = elements.empty;
+                            newGrid[i][j + 1] = elements.sand;
+                        }
+                    } else if (type === elements.water) {
+                        const dir = Math.random() > 0.5 ? 1 : -1;
+                        if (j + 1 < rows && newGrid[i][j+1] === elements.empty) { // Down
+                            newGrid[i][j] = elements.empty;
+                            newGrid[i][j + 1] = elements.water;
+                        } else if (i + dir >= 0 && i + dir < cols && newGrid[i+dir][j] === elements.empty) { // Sideways
+                            newGrid[i][j] = elements.empty;
+                            newGrid[i + dir][j] = elements.water;
+                        }
+                    }
+                }
+            }
+            grid = newGrid;
+            drawGrid();
+            animationFrameId = requestAnimationFrame(update);
+        }
+        
+        function setActiveTool(element) {
+            currentElement = element;
+            toolButtons.forEach(btn => {
+                if (btn.dataset.element === element) {
+                    btn.classList.add('border-2', 'border-indigo-500');
+                } else {
+                    btn.classList.remove('border-2', 'border-indigo-500');
+                }
+            });
+        }
+        
+        toolButtons.forEach(btn => btn.addEventListener('click', () => setActiveTool(btn.dataset.element)));
+
+        function handleDraw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches ? e.touches[0] : e;
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            const col = Math.floor(x / resolution);
+            const row = Math.floor(y / resolution);
+
+            if (currentElement === 'erase') {
+                if (col >= 0 && row >= 0 && col < cols && row < rows) {
+                    grid[col][row] = elements.empty;
+                }
+            } else {
+                 if (col >= 0 && row >= 0 && col < cols && row < rows) {
+                    grid[col][row] = elements[currentElement];
+                 }
+            }
+        }
+        
+        canvas.addEventListener('mousedown', (e) => { isDrawing = true; handleDraw(e); });
+        canvas.addEventListener('mouseup', () => { isDrawing = false; });
+        canvas.addEventListener('mouseleave', () => { isDrawing = false; });
+        canvas.addEventListener('mousemove', handleDraw);
+        canvas.addEventListener('touchstart', (e) => { isDrawing = true; handleDraw(e); }, { passive: false });
+        canvas.addEventListener('touchend', () => { isDrawing = false; });
+        canvas.addEventListener('touchmove', handleDraw, { passive: false });
+        
+        setup();
+        setActiveTool('sand');
+        
+        return {
+            stop: () => {
+                cancelAnimationFrame(animationFrameId);
+                window.removeEventListener('resize', setup);
+            }
+        };
+    }
+    
+    // 4. EcoSphere
+    function initEcoSphere() {
+        const canvas = document.getElementById('ecosphere-canvas');
+        const ctx = canvas.getContext('2d');
+        const grassEl = document.getElementById('eco-grass');
+        const sheepEl = document.getElementById('eco-sheep');
+        const wolvesEl = document.getElementById('eco-wolves');
+        
+        let creatures = [];
+        let animationFrameId;
+
+        function setup() {
+            const containerWidth = canvas.parentElement.clientWidth;
+            canvas.width = containerWidth;
+            canvas.height = containerWidth * 0.75;
+            creatures = [];
+            for (let i = 0; i < 30; i++) addCreature('grass');
+            for (let i = 0; i < 5; i++) addCreature('sheep');
+            for (let i = 0; i < 2; i++) addCreature('wolf');
+            update();
+        }
+        
+        function addCreature(type, x, y) {
+             creatures.push({
+                type,
+                x: x || Math.random() * canvas.width,
+                y: y || Math.random() * canvas.height,
+                energy: 100,
+                speed: type === 'sheep' ? 1.5 : (type === 'wolf' ? 2 : 0)
+            });
+        }
+        
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            creatures.forEach(c => {
+                ctx.beginPath();
+                if (c.type === 'grass') {
+                    ctx.fillStyle = 'green';
+                    ctx.fillRect(c.x - 2, c.y - 2, 4, 4);
+                } else if (c.type === 'sheep') {
+                    ctx.fillStyle = 'white';
+                    ctx.arc(c.x, c.y, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = 'black';
+                    ctx.stroke();
+                } else if (c.type === 'wolf') {
+                    ctx.fillStyle = '#4b5563'; // gray-600
+                    ctx.arc(c.x, c.y, 7, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+        }
+        
+        function update() {
+            const newCreatures = [];
+            let counts = { grass: 0, sheep: 0, wolf: 0 };
+
+            creatures.forEach(c => {
+                // Movement
+                if (c.type === 'sheep' || c.type === 'wolf') {
+                    c.x += (Math.random() - 0.5) * c.speed * 2;
+                    c.y += (Math.random() - 0.5) * c.speed * 2;
+                    c.x = Math.max(0, Math.min(canvas.width, c.x));
+                    c.y = Math.max(0, Math.min(canvas.height, c.y));
+                    c.energy -= 0.2;
+                }
+
+                // Interactions
+                if (c.type === 'sheep') {
+                    creatures.forEach((other, index) => {
+                       if (other.type === 'grass' && Math.hypot(c.x-other.x, c.y-other.y) < 10) {
+                           c.energy += 20;
+                           creatures.splice(index, 1);
+                       }
+                    });
+                } else if (c.type === 'wolf') {
+                     creatures.forEach((other, index) => {
+                       if (other.type === 'sheep' && Math.hypot(c.x-other.x, c.y-other.y) < 10) {
+                           c.energy += 30;
+                           creatures.splice(index, 1);
+                       }
+                    });
+                }
+                
+                // Reproduction and Death
+                if (c.energy <= 0) return; // Die
+                if (c.energy > 150) {
+                    c.energy = 100;
+                    newCreatures.push({ ...c, x: c.x + 10, y: c.y + 10});
+                }
+
+                newCreatures.push(c);
+                counts[c.type]++;
+            });
+
+            creatures = newCreatures;
+
+            // Grass regrowth
+            if (Math.random() < 0.1) addCreature('grass');
+
+            grassEl.textContent = counts.grass;
+            sheepEl.textContent = counts.sheep;
+            wolvesEl.textContent = counts.wolf;
+            
+            draw();
+            animationFrameId = requestAnimationFrame(update);
+        }
+
+        document.getElementById('eco-add-grass').onclick = () => { for (let i = 0; i < 10; i++) addCreature('grass'); };
+        document.getElementById('eco-add-sheep').onclick = () => addCreature('sheep');
+        document.getElementById('eco-add-wolf').onclick = () => addCreature('wolf');
+
+        setup();
+        return { stop: () => cancelAnimationFrame(animationFrameId) };
+    }
+
+    // 5. MarketMogul
+    function initMarketMogul() {
+        const canvas = document.getElementById('marketmogul-canvas');
+        const ctx = canvas.getContext('2d');
+        const cashEl = document.getElementById('market-cash');
+        const sharesEl = document.getElementById('market-shares');
+        const priceEl = document.getElementById('market-price');
+        const worthEl = document.getElementById('market-worth');
+        
+        let cash = 1000;
+        let shares = 0;
+        let price = 100.0;
+        let priceHistory = [];
+        let gameInterval;
+
+        function setup() {
+            const containerWidth = canvas.parentElement.clientWidth;
+            canvas.width = containerWidth;
+            canvas.height = canvas.clientHeight;
+            priceHistory = new Array(Math.floor(canvas.width / 5)).fill(price);
+            gameInterval = setInterval(updateMarket, 1000);
+            drawChart();
+            updateUI();
+        }
+        
+        function updateMarket() {
+            const change = (Math.random() - 0.49) * 5;
+            price += change;
+            price = Math.max(1.0, price); // prevent price from going below 1
+            priceHistory.push(price);
+            if (priceHistory.length > canvas.width / 5) {
+                priceHistory.shift();
+            }
+            drawChart();
+            updateUI();
+        }
+
+        function drawChart() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const maxPrice = Math.max(...priceHistory) * 1.1;
+            const minPrice = Math.min(...priceHistory) * 0.9;
+            
+            ctx.strokeStyle = '#4f46e5';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            priceHistory.forEach((p, i) => {
+                const x = i * 5;
+                const y = canvas.height - ((p - minPrice) / (maxPrice - minPrice)) * canvas.height;
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+        }
+
+        function updateUI() {
+            cashEl.textContent = cash.toFixed(2);
+            sharesEl.textContent = shares;
+            priceEl.textContent = price.toFixed(2);
+            const netWorth = cash + shares * price;
+            worthEl.textContent = netWorth.toFixed(2);
+        }
+
+        document.getElementById('market-buy').onclick = () => {
+            if (cash >= price) {
+                cash -= price;
+                shares++;
+                updateUI();
+            }
+        };
+
+        document.getElementById('market-sell').onclick = () => {
+            if (shares > 0) {
+                cash += price;
+                shares--;
+                updateUI();
+            }
+        };
+
+        setup();
+        return { stop: () => clearInterval(gameInterval) };
+    }
+    </script>
+</body>
+</html>
+
