@@ -3,320 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Hub - 20 Classic Games</title>
+    <title>Mobile Game Arcade</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
+        /* Apply the Inter font family */
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #111827; /* gray-900 */
-            color: #f3f4f6; /* gray-100 */
-            touch-action: manipulation;
+            font-family: 'Inter', sans-serif;
         }
-        .game-card {
-            background-color: #1f2937; /* gray-800 */
-            border: 1px solid #374151; /* gray-700 */
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2), 0 4px 6px -4px rgba(99, 102, 241, 0.2);
-        }
-        .play-button {
-            background-color: #6366f1; /* indigo-500 */
-            transition: background-color 0.2s ease-in-out;
-        }
-        .play-button:hover {
-            background-color: #4f46e5; /* indigo-600 */
-        }
-        #game-modal {
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-        }
-        .game-canvas {
-            background-color: #000;
-            border-radius: 0.5rem;
-            border: 1px solid #4b5563; /* gray-600 */
-        }
-        /* Custom scrollbar for a sleeker look */
+        
+        /* Custom scrollbar for a more integrated dark mode feel */
         ::-webkit-scrollbar {
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #1f2937; /* gray-800 */
+            background: #1e293b; /* slate-800 */
         }
         ::-webkit-scrollbar-thumb {
-            background: #4f46e5; /* indigo-600 */
-            border-radius: 4px;
+            background: #475569; /* slate-600 */
+            border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #6366f1; /* indigo-500 */
+            background: #64748b; /* slate-500 */
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-900 text-gray-200">
 
-    <!-- Main Menu -->
-    <div id="main-menu" class="container mx-auto max-w-4xl p-4 sm:p-6">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">
-                Game Hub
+    <!-- Main Container -->
+    <div class="container mx-auto max-w-3xl p-4 sm:p-6 md:p-8">
+
+        <!-- Header Section -->
+        <header class="text-center mb-10 md:mb-12">
+            <h1 class="text-4xl sm:text-5xl font-bold text-white tracking-tight">
+                Mobile Game Arcade
             </h1>
-            <p class="text-gray-400 mt-2">20 classic games to play in your browser.</p>
+            <p class="mt-3 text-lg text-slate-400">
+                A collection of fun, web-based games you can play on any device.
+            </p>
         </header>
 
-        <div id="game-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Game cards will be injected here by JavaScript -->
-        </div>
+        <!-- Games List -->
+        <main id="game-list" class="space-y-6">
+            
+            <!-- Game Card: Snake -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 transition-all duration-300 hover:bg-slate-800 hover:shadow-2xl hover:shadow-cyan-500/10 hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white">Classic Snake</h2>
+                <p class="mt-2 text-slate-400">Navigate the snake to eat the food and grow longer, but don't hit the walls or yourself!</p>
+                <a href="https://patorjk.com/games/snake/" target="_blank" rel="noopener noreferrer" class="inline-block mt-4 bg-cyan-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:bg-cyan-500 hover:scale-105 active:scale-95">
+                    Play Now
+                </a>
+            </div>
+
+            <!-- Game Card: Tic Tac Toe -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 transition-all duration-300 hover:bg-slate-800 hover:shadow-2xl hover:shadow-pink-500/10 hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white">Tic Tac Toe</h2>
+                <p class="mt-2 text-slate-400">The classic 3x3 grid game. Play against a friend or challenge the intelligent AI.</p>
+                <a href="https://playtictactoe.org/" target="_blank" rel="noopener noreferrer" class="inline-block mt-4 bg-pink-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:bg-pink-500 hover:scale-105 active:scale-95">
+                    Play Now
+                </a>
+            </div>
+
+            <!-- Game Card: Rock Paper Scissors -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 transition-all duration-300 hover:bg-slate-800 hover:shadow-2xl hover:shadow-emerald-500/10 hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white">Rock Paper Scissors</h2>
+                <p class="mt-2 text-slate-400">Test your luck and strategy against the computer in this timeless game of choices.</p>
+                <a href="https://www.afiniti.com/corporate/rock-paper-scissors" target="_blank" rel="noopener noreferrer" class="inline-block mt-4 bg-emerald-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:bg-emerald-500 hover:scale-105 active:scale-95">
+                    Play Now
+                </a>
+            </div>
+            
+            <!-- Game Card: Memory Card Match -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 transition-all duration-300 hover:bg-slate-800 hover:shadow-2xl hover:shadow-amber-500/10 hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white">Memory Card Match</h2>
+                <p class="mt-2 text-slate-400">Flip the cards and find all the matching pairs. A fun test for your memory and focus.</p>
+                <a href="https://www.helpfulgames.com/subjects/brain-training/memory.html" target="_blank" rel="noopener noreferrer" class="inline-block mt-4 bg-amber-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:bg-amber-500 hover:scale-105 active:scale-95">
+                    Play Now
+                </a>
+            </div>
+
+            <!-- Game Card: Flappy Bird Clone -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 transition-all duration-300 hover:bg-slate-800 hover:shadow-2xl hover:shadow-yellow-500/10 hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white">Flappy Bird</h2>
+                <p class="mt-2 text-slate-400">Tap to keep the bird afloat and carefully navigate through an endless series of pipes.</p>
+                <a href="https://flappybird.io/" target="_blank" rel="noopener noreferrer" class="inline-block mt-4 bg-yellow-500 text-slate-900 font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:bg-yellow-400 hover:scale-105 active:scale-95">
+                    Play Now
+                </a>
+            </div>
+
+            <!-- Game Card: 2048 -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 transition-all duration-300 hover:bg-slate-800 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white">2048</h2>
+                <p class="mt-2 text-slate-400">Slide the numbered tiles and combine them to reach the elusive and challenging 2048 tile.</p>
+                <a href="https://play2048.co/" target="_blank" rel="noopener noreferrer" class="inline-block mt-4 bg-orange-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:bg-orange-500 hover:scale-105 active:scale-95">
+                    Play Now
+                </a>
+            </div>
+
+            <!-- Game Card: Life Simulation Mini (Little Alchemy) -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 transition-all duration-300 hover:bg-slate-800 hover:shadow-2xl hover:shadow-sky-500/10 hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white">Little Alchemy 2</h2>
+                <p class="mt-2 text-slate-400">A simple yet deep simulation. Mix elements to create the world from scratch!</p>
+                <a href="https://littlealchemy2.com/" target="_blank" rel="noopener noreferrer" class="inline-block mt-4 bg-sky-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:bg-sky-500 hover:scale-105 active:scale-95">
+                    Play Now
+                </a>
+            </div>
+            
+            <!-- Game Card: Pong -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 transition-all duration-300 hover:bg-slate-800 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white">Pong</h2>
+                <p class="mt-2 text-slate-400">The original arcade classic. Move your paddle to volley the ball past your opponent.</p>
+                <a href="https://www.ponggame.org/" target="_blank" rel="noopener noreferrer" class="inline-block mt-4 bg-indigo-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:bg-indigo-500 hover:scale-105 active:scale-95">
+                    Play Now
+                </a>
+            </div>
+            
+            <!-- Game Card: Minesweeper -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 transition-all duration-300 hover:bg-slate-800 hover:shadow-2xl hover:shadow-gray-500/10 hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white">Minesweeper</h2>
+                <p class="mt-2 text-slate-400">A classic logic puzzle game. Clear the board without detonating any hidden mines.</p>
+                <a href="https://minesweeper.online/" target="_blank" rel="noopener noreferrer" class="inline-block mt-4 bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:bg-gray-400 hover:scale-105 active:scale-95">
+                    Play Now
+                </a>
+            </div>
+
+            <!-- Game Card: Connect Four -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 transition-all duration-300 hover:bg-slate-800 hover:shadow-2xl hover:shadow-red-500/10 hover:-translate-y-1">
+                <h2 class="text-2xl font-semibold text-white">Connect Four</h2>
+                <p class="mt-2 text-slate-400">Drop your discs into the grid and be the first to get four in a row, horizontally, vertically, or diagonally.</p>
+                <a href="https://www.mathsisfun.com/games/connect4.html" target="_blank" rel="noopener noreferrer" class="inline-block mt-4 bg-red-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:bg-red-500 hover:scale-105 active:scale-95">
+                    Play Now
+                </a>
+            </div>
+
+        </main>
+
+        <!-- Footer Section -->
+        <footer class="text-center mt-12 pt-8 border-t border-slate-800">
+            <p class="text-slate-400">Made by Aju</p>
+            <p class="mt-2 text-slate-500">Thanks for visiting and playing these games!</p>
+            <a href="https://www.instagram.com/ajuuw" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block text-cyan-400 hover:text-cyan-300 transition-colors duration-300 group">
+                Connect with me on Instagram
+                <span class="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+            </a>
+        </footer>
+
     </div>
 
-    <!-- Game Modal -->
-    <div id="game-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
-        <div id="game-modal-content" class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-4xl max-h-full flex flex-col border border-gray-700">
-            <header class="flex items-center justify-between p-4 border-b border-gray-700">
-                <h2 id="game-title" class="text-2xl font-bold text-indigo-400">Game Title</h2>
-                <button id="close-game-btn" class="text-gray-400 hover:text-white text-3xl font-bold">&times;</button>
-            </header>
-            <main class="p-4 flex-grow overflow-y-auto">
-                 <!-- Canvas for games that need it -->
-                <canvas id="game-canvas" class="game-canvas w-full h-auto block"></canvas>
-                <!-- Container for non-canvas games -->
-                <div id="game-area" class="w-full h-auto"></div>
-            </main>
-            <footer id="game-controls" class="p-4 border-t border-gray-700">
-                <!-- Game-specific controls will be injected here -->
-            </footer>
-        </div>
-    </div>
-
-    <script>
-    // --- Main Controller ---
-    const gameListContainer = document.getElementById('game-list');
-    const gameModal = document.getElementById('game-modal');
-    const gameModalContent = document.getElementById('game-modal-content');
-    const gameTitleEl = document.getElementById('game-title');
-    const closeGameBtn = document.getElementById('close-game-btn');
-    const gameCanvas = document.getElementById('game-canvas');
-    const gameArea = document.getElementById('game-area');
-    const gameControls = document.getElementById('game-controls');
-
-    let activeGame = null;
-
-    // --- Game Definitions ---
-    // An array of objects, each representing a game.
-    // This makes it easy to add or remove games.
-    const games = [
-        // Simulations
-        { id: 'lifesim', name: 'LifeSim', description: 'A cellular automaton devised by John Conway. Watch complex patterns emerge.', init: initLifeSim },
-        { id: 'pixelpowder', name: 'PixelPowder', description: 'A falling sand game. Draw with different elements and watch them interact.', init: initPixelPowder },
-        { id: 'ecosphere', name: 'EcoSphere', description: 'A simple predator-prey simulation. Balance the populations of different species.', init: initEcoSphere },
-        // Classic Arcade
-        { id: 'snake', name: 'Snake', description: 'Guide the snake to eat the food, but don\'t run into the walls or yourself!', init: initSnake },
-        { id: 'pong', name: 'Pong', description: 'The original paddle and ball game. Compete against an AI opponent.', init: initPong },
-        { id: 'breakout', name: 'Breakout', description: 'Clear all the bricks by bouncing a ball off your paddle.', init: initBreakout },
-        { id: 'spacerocks', name: 'Space Rocks', description: 'An asteroids clone. Pilot your ship, destroy rocks, and survive.', init: initSpaceRocks },
-        { id: 'flappypipe', name: 'Flappy Pipe', description: 'Guide the bird through the pipes. A notoriously challenging classic.', init: initFlappyPipe },
-        // Puzzles
-        { id: 'tictactoe', name: 'Tic-Tac-Toe', description: 'The classic game of X and O. Can you beat the computer?', init: initTicTacToe },
-        { id: 'minesweeper', name: 'Minesweeper', description: 'Clear the board without detonating any hidden mines. A game of logic.', init: initMinesweeper },
-        { id: 'blockfall', name: 'BlockFall', description: 'A Tetris-like game. Fit the falling blocks together to clear lines.', init: initBlockFall },
-        { id: 'connectfour', name: 'Connect Four', description: 'Drop your colored discs to get four in a row before the AI does.', init: initConnectFour },
-        { id: 'memorymatch', name: 'Memory Match', description: 'Flip the cards and find all the matching pairs. Test your memory!', init: initMemoryMatch },
-        { id: '2048', name: '2048', description: 'Slide the tiles to merge identical numbers and try to create the 2048 tile.', init: init2048 },
-        { id: 'mazerunner', name: 'Maze Runner', description: 'Find your way through a randomly generated maze to the exit.', init: initMazeRunner },
-        // Other
-        { id: 'hangman', name: 'Hangman', description: 'Guess the letters to solve the word puzzle before it\'s too late.', init: initHangman },
-        { id: 'clickerhero', name: 'Clicker Hero', description: 'An incremental game. Click the monster to earn gold and buy upgrades.', init: initClickerHero },
-        { id: 'drawingpad', name: 'Drawing Pad', description: 'A simple canvas to sketch and draw your ideas freely.', init: initDrawingPad },
-        { id: 'simonsays', name: 'Simon Says', description: 'Follow the sequence of colors and sounds. A classic memory challenge.', init: initSimonSays },
-        { id: 'rockpaperscissors', name: 'Rock, Paper, Scissors', description: 'The timeless decision-making game. Play against the computer.', init: initRockPaperScissors },
-    ];
-
-    // --- Core Functions ---
-
-    function openGame(gameId) {
-        const game = games.find(g => g.id === gameId);
-        if (!game) return;
-
-        // Clean up previous game if any
-        if (activeGame && activeGame.stop) {
-            activeGame.stop();
-        }
-        
-        // Reset UI elements
-        gameCanvas.style.display = 'none';
-        gameArea.style.display = 'none';
-        gameArea.innerHTML = '';
-        gameControls.innerHTML = '';
-
-        gameTitleEl.textContent = game.name;
-        gameModal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
-
-        // Initialize the new game
-        activeGame = game.init({
-            canvas: gameCanvas,
-            area: gameArea,
-            controls: gameControls
-        });
-    }
-
-    function closeGame() {
-        if (activeGame && activeGame.stop) {
-            activeGame.stop();
-            activeGame = null;
-        }
-        gameModal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
-
-    // --- Main Menu Initialization ---
-    function initMainMenu() {
-        games.forEach(game => {
-            const card = document.createElement('div');
-            card.className = 'game-card rounded-lg p-4 flex flex-col';
-            card.innerHTML = `
-                <h3 class="text-xl font-bold text-indigo-400 mb-2">${game.name}</h3>
-                <p class="text-gray-400 text-sm flex-grow mb-4">${game.description}</p>
-                <button data-game-id="${game.id}" class="play-button mt-auto text-white font-bold py-2 px-4 rounded-lg w-full">Play</button>
-            `;
-            gameListContainer.appendChild(card);
-        });
-    }
-
-    // --- Event Listeners ---
-    gameListContainer.addEventListener('click', (e) => {
-        if (e.target.matches('.play-button')) {
-            openGame(e.target.dataset.gameId);
-        }
-    });
-
-    closeGameBtn.addEventListener('click', closeGame);
-
-    // Close modal if clicking outside the content
-    gameModal.addEventListener('click', (e) => {
-        if (e.target === gameModal) {
-            closeGame();
-        }
-    });
-
-    // Close modal with Escape key
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !gameModal.classList.contains('hidden')) {
-            closeGame();
-        }
-    });
-
-
-    // --- Game Implementations Placeholder ---
-    // Each function will set up a specific game and return a `stop` method for cleanup.
-    // NOTE: For brevity in this example, many games are simplified.
-    // The structure, however, is robust and scalable.
-
-    function initTicTacToe({ area, controls }) {
-        area.style.display = 'grid';
-        area.style.gridTemplateColumns = 'repeat(3, 1fr)';
-        area.style.gap = '10px';
-        area.style.maxWidth = '300px';
-        area.style.margin = 'auto';
-        area.style.aspectRatio = '1 / 1';
-        
-        let board = ['', '', '', '', '', '', '', '', ''];
-        let currentPlayer = 'X';
-        let gameOver = false;
-        
-        controls.innerHTML = `<p id="ttt-status" class="text-center font-semibold text-lg">Your turn (X)</p>`;
-        const statusEl = document.getElementById('ttt-status');
-
-        function render() {
-            area.innerHTML = '';
-            board.forEach((cell, index) => {
-                const cellEl = document.createElement('div');
-                cellEl.className = 'bg-gray-700 rounded-lg flex items-center justify-center text-5xl font-bold cursor-pointer';
-                cellEl.textContent = cell;
-                if(cell === 'X') cellEl.classList.add('text-indigo-400');
-                if(cell === 'O') cellEl.classList.add('text-pink-400');
-                cellEl.addEventListener('click', () => handleClick(index));
-                area.appendChild(cellEl);
-            });
-        }
-
-        function handleClick(index) {
-            if (gameOver || board[index] !== '') return;
-            board[index] = currentPlayer;
-            render();
-            if (checkWin(currentPlayer)) {
-                statusEl.textContent = `${currentPlayer} Wins!`;
-                gameOver = true;
-                return;
-            }
-            if (board.every(cell => cell !== '')) {
-                statusEl.textContent = 'Draw!';
-                gameOver = true;
-                return;
-            }
-            currentPlayer = 'O';
-            statusEl.textContent = 'Computer is thinking...';
-            setTimeout(computerMove, 500);
-        }
-        
-        function computerMove() {
-            if (gameOver) return;
-            let move;
-            do {
-                move = Math.floor(Math.random() * 9);
-            } while (board[move] !== '');
-            board[move] = 'O';
-            render();
-             if (checkWin('O')) {
-                statusEl.textContent = `O Wins!`;
-                gameOver = true;
-                return;
-            }
-            currentPlayer = 'X';
-            statusEl.textContent = 'Your turn (X)';
-        }
-        
-        function checkWin(player) {
-            const lines = [ [0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6] ];
-            return lines.some(line => line.every(index => board[index] === player));
-        }
-
-        render();
-
-        return { stop: () => { /* No special cleanup needed */ } };
-    }
-
-    // Dummy functions for other games to show the structure.
-    // A full implementation would be extremely long.
-    function initSnake({ canvas, controls }) { canvas.style.display = 'block'; controls.innerHTML = '<p class="text-center">Use Arrow Keys or Swipe to move the snake.</p>'; return { stop: () => console.log('Stopping Snake') }; }
-    function initPong({ canvas, controls }) { canvas.style.display = 'block'; controls.innerHTML = '<p class="text-center">Use Mouse or Touch to control your paddle.</p>'; return { stop: () => console.log('Stopping Pong') }; }
-    function initBreakout({ canvas, controls }) { canvas.style.display = 'block'; controls.innerHTML = '<p class="text-center">Use Mouse or Touch to move the paddle.</p>'; return { stop: () => console.log('Stopping Breakout') }; }
-    function initSpaceRocks({ canvas, controls }) { canvas.style.display = 'block'; controls.innerHTML = '<p class="text-center">Arrows/WASD to move, Space to shoot.</p>'; return { stop: () => console.log('Stopping Space Rocks') }; }
-    function initFlappyPipe({ canvas, controls }) { canvas.style.display = 'block'; controls.innerHTML = '<p class="text-center">Click or Tap to flap.</p>'; return { stop: () => console.log('Stopping Flappy Pipe') }; }
-    function initMinesweeper({ area, controls }) { area.style.display = 'block'; area.innerHTML = `<div class="text-center p-8 bg-gray-700 rounded-lg">Minesweeper game area.</div>`; controls.innerHTML = '<p class="text-center">Left-click to reveal, Right-click to flag.</p>'; return { stop: () => console.log('Stopping Minesweeper') }; }
-    function initBlockFall({ canvas, controls }) { canvas.style.display = 'block'; controls.innerHTML = '<p class="text-center">Arrows/Swipe to move, Up/Tap to rotate.</p>'; return { stop: () => console.log('Stopping BlockFall') }; }
-    function initConnectFour({ area, controls }) { area.style.display = 'block'; area.innerHTML = `<div class="text-center p-8 bg-gray-700 rounded-lg">Connect Four game area.</div>`; controls.innerHTML = '<p class="text-center">Click a column to drop your piece.</p>'; return { stop: () => console.log('Stopping Connect Four') }; }
-    function initMemoryMatch({ area, controls }) { area.style.display = 'block'; area.innerHTML = `<div class="text-center p-8 bg-gray-700 rounded-lg">Memory Match game area.</div>`; controls.innerHTML = '<p class="text-center">Click cards to find matching pairs.</p>'; return { stop: () => console.log('Stopping Memory Match') }; }
-    function init2048({ area, controls }) { area.style.display = 'block'; area.innerHTML = `<div class="text-center p-8 bg-gray-700 rounded-lg">2048 game area.</div>`; controls.innerHTML = '<p class="text-center">Use Arrow Keys or Swipe to move tiles.</p>'; return { stop: () => console.log('Stopping 2048') }; }
-    function initMazeRunner({ canvas, controls }) { canvas.style.display = 'block'; controls.innerHTML = '<p class="text-center">Use Arrow Keys or Swipe to navigate the maze.</p>'; return { stop: () => console.log('Stopping Maze Runner') }; }
-    function initHangman({ area, controls }) { area.style.display = 'block'; area.innerHTML = `<div class="text-center p-8 bg-gray-700 rounded-lg">Hangman game area.</div>`; controls.innerHTML = '<p class="text-center">Click letters to guess the word.</p>'; return { stop: () => console.log('Stopping Hangman') }; }
-    function initClickerHero({ area, controls }) { area.style.display = 'block'; area.innerHTML = `<div class="text-center p-8 bg-gray-700 rounded-lg">Clicker Hero game area.</div>`; controls.innerHTML = '<p class="text-center">Click! Click! Click!</p>'; return { stop: () => console.log('Stopping Clicker Hero') }; }
-    function initDrawingPad({ canvas, controls }) { canvas.style.display = 'block'; controls.innerHTML = '<p class="text-center">Click and drag to draw.</p>'; return { stop: () => console.log('Stopping Drawing Pad') }; }
-    function initSimonSays({ area, controls }) { area.style.display = 'block'; area.innerHTML = `<div class="text-center p-8 bg-gray-700 rounded-lg">Simon Says game area.</div>`; controls.innerHTML = '<p class="text-center">Repeat the pattern.</p>'; return { stop: () => console.log('Stopping Simon Says') }; }
-    function initRockPaperScissors({ area, controls }) { area.style.display = 'block'; area.innerHTML = `<div class="text-center p-8 bg-gray-700 rounded-lg">Rock, Paper, Scissors game area.</div>`; controls.innerHTML = '<p class="text-center">Choose your weapon!</p>'; return { stop: () => console.log('Stopping Rock, Paper, Scissors') }; }
-    function initLifeSim({ canvas, controls }) { canvas.style.display = 'block'; controls.innerHTML = `<div class="flex justify-center gap-2"><button class="play-button text-sm px-3 py-1 rounded">Start</button><button class="bg-gray-500 text-sm px-3 py-1 rounded">Clear</button></div>`; return { stop: () => console.log('Stopping LifeSim') }; }
-    function initPixelPowder({ canvas, controls }) { canvas.style.display = 'block'; controls.innerHTML = `<div class="text-center"><p>Select an element and draw.</p></div>`; return { stop: () => console.log('Stopping PixelPowder') }; }
-    function initEcoSphere({ canvas, controls }) { canvas.style.display = 'block'; controls.innerHTML = `<div class="text-center"><p>Add creatures and observe the ecosystem.</p></div>`; return { stop: () => console.log('Stopping EcoSphere') }; }
-
-
-    // --- App Start ---
-    window.addEventListener('load', initMainMenu);
-
-    </script>
 </body>
 </html>
-
 
